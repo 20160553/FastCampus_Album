@@ -64,6 +64,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initStartPhotoFrameModeButton() {
+        startPhotoFrameModeButton.setOnClickListener {
+            val intent = Intent(this, PhotoFrameActivity::class.java)
+            imageUriList.forEachIndexed{index, uri ->
+                intent.putExtra("photo$index", uri.toString())
+            }
+            intent.putExtra("photoListSize", imageUriList.size)
+        }
+    }
+
     private fun navigatePhotos() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
@@ -129,10 +139,6 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton("취소하기", {_, _ -> })
             .create()
             .show()
-    }
-
-    private fun initStartPhotoFrameModeButton() {
-
     }
 
 }
