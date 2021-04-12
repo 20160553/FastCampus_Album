@@ -66,11 +66,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun initStartPhotoFrameModeButton() {
         startPhotoFrameModeButton.setOnClickListener {
+            if (imageUriList.size == 0){
+                Toast.makeText(this, "사진이 선택되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val intent = Intent(this, PhotoFrameActivity::class.java)
             imageUriList.forEachIndexed{index, uri ->
                 intent.putExtra("photo$index", uri.toString())
             }
             intent.putExtra("photoListSize", imageUriList.size)
+            startActivity(intent)
         }
     }
 

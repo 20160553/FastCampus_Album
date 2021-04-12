@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import java.util.*
 import kotlin.concurrent.timer
 
 class PhotoFrameActivity: AppCompatActivity() {
@@ -16,16 +17,15 @@ class PhotoFrameActivity: AppCompatActivity() {
         findViewById<ImageView>(R.id.backgroundPhotoImageView)
     }
 
+    private var timer: Timer? = null
     private val photoList = mutableListOf<Uri>()
     private var currentPosition = 0
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photoframe)
 
         getPhotoUriFromIntent()
-
-//        startTimer()
     }
     private fun getPhotoUriFromIntent() {
         val size = intent.getIntExtra("photoListSize", 0)
@@ -37,7 +37,7 @@ class PhotoFrameActivity: AppCompatActivity() {
     }
 
     private fun startTimer() {
-        timer(period = 5 * 1000) {
+        timer = timer(period = 5 * 1000) {
             runOnUiThread {
                 val current = currentPosition
                 val next = if (photoList.size <= currentPosition + 1) 0 else currentPosition + 1
@@ -54,5 +54,22 @@ class PhotoFrameActivity: AppCompatActivity() {
                 currentPosition = next
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        timer?.cancel()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        startTimer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timer?.cancel()
     }
 }
